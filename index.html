@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Join Free — Instant Access on Telegram</title>
+  <meta name="description" content="Click करते ही Telegram खुलेगा। Instant access, कोई charge नहीं।" />
+  <meta property="og:title" content="Join Free — Instant Access on Telegram" />
+  <meta property="og:description" content="Click करते ही Telegram खुलेगा। Instant access, कोई charge नहीं।" />
+  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Unbounded:wght@700;800&display=swap" />
+  <style>
+    :root {
+      --background: oklch(14% .01 240);
+      --foreground: oklch(97% .005 240);
+      --primary: oklch(72% .15 230);
+      --primary-glow: oklch(82% .11 225);
+      --primary-foreground: oklch(99% 0 0);
+      --muted-foreground: oklch(72% .015 240);
+      --destructive: oklch(65% .22 25);
+      --font-display: "Unbounded", system-ui, sans-serif;
+      --font-body: "DM Sans", system-ui, sans-serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: var(--background);
+      color: var(--foreground);
+      font-family: var(--font-body);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .page-bg {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 1.25rem;
+      background:
+        radial-gradient(ellipse 80% 50% at 50% 0%, color-mix(in oklab, var(--primary) 14%, transparent), transparent),
+        radial-gradient(ellipse 60% 40% at 80% 100%, oklch(40% .08 40 / .15), transparent),
+        var(--background);
+    }
+
+    .wrap { width: 100%; max-width: 36rem; }
+
+    .cta-frame {
+      border: 1px solid color-mix(in oklab, var(--primary) 30%, transparent);
+      border-radius: 999px;
+      padding: .6rem;
+      box-shadow: 0 0 40px color-mix(in oklab, var(--primary) 25%, transparent);
+    }
+
+    .cta-button {
+      width: 100%;
+      border: 0;
+      cursor: pointer;
+      background: linear-gradient(90deg, var(--primary) 60%, var(--primary-glow));
+      color: var(--primary-foreground);
+      font-family: var(--font-display);
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      box-shadow: 0 10px 40px -8px color-mix(in oklab, var(--primary) 70%, transparent);
+      border-radius: 999px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: .9rem;
+      padding: clamp(1rem, 3vw, 1.35rem) clamp(1.1rem, 4vw, 2rem);
+      font-size: clamp(.85rem, 4vw, 1.35rem);
+      font-weight: 800;
+      position: relative;
+      overflow: hidden;
+      transition: transform .2s, box-shadow .2s;
+    }
+    .cta-button:hover { transform: translateY(-2px) scale(1.01); }
+    .cta-button:disabled { cursor: default; }
+    .cta-button::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      width: 30%;
+      background: linear-gradient(90deg, #0000, oklch(100% 0 0 / .35), #0000);
+      transform: translate(-150%) skew(-20deg);
+      animation: shine 3s ease-in-out infinite;
+    }
+    @keyframes shine { 60%, to { transform: translate(450%) skew(-20deg); } }
+
+    .cta-button svg { width: 1.5rem; height: 1.5rem; flex-shrink: 0; }
+    .nowrap { white-space: nowrap; }
+
+    .note {
+      margin-top: 1.25rem;
+      text-align: center;
+      font-size: .875rem;
+      line-height: 1.25rem;
+      color: var(--muted-foreground);
+    }
+    .error {
+      margin-top: .75rem;
+      text-align: center;
+      font-size: .875rem;
+      color: var(--destructive);
+    }
+  </style>
+</head>
+<body>
+  <main class="page-bg">
+    <div class="wrap">
+      <div class="cta-frame">
+        <button type="button" id="cta" class="cta-button">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z"></path><path d="m21.854 2.147-10.94 10.939"></path></svg>
+          <span class="nowrap" id="cta-label">Join Telegram Free</span>
+        </button>
+      </div>
+      <p class="note">Click करते ही Telegram खुलेगा • Instant access • कोई charge नहीं</p>
+      <p class="error" id="error" role="alert" hidden></p>
+    </div>
+  </main>
+
+  <script>
+    // ===== CONFIG =====
+    // Apna Telegram invite link yaha daalein
+    var TELEGRAM_LINK = "https://t.me/+N5nVNc0ubQU4NmNl";
+    // Meta (Facebook) Pixel ID — khali chhodein agar pixel nahi chahiye
+    var PIXEL_ID = "1135764195685848";
+    // ==================
+
+    if (PIXEL_ID) {
+      !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+      n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+      n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+      t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
+      document,'script','https://connect.facebook.net/en_US/fbevents.js');
+      fbq('init', PIXEL_ID);
+      fbq('track', 'PageView');
+    }
+
+    var btn = document.getElementById('cta');
+    var label = document.getElementById('cta-label');
+    var errorEl = document.getElementById('error');
+
+    btn.addEventListener('click', function () {
+      if (btn.disabled) return;
+      btn.disabled = true;
+      label.textContent = 'Opening…';
+      errorEl.hidden = true;
+      try {
+        if (window.fbq) fbq('track', 'Lead');
+        var w = window.open(TELEGRAM_LINK, '_blank');
+        if (!w) window.location.href = TELEGRAM_LINK;
+      } catch (e) {
+        errorEl.textContent = 'Link नहीं बन पाया, कृपया दोबारा try करें।';
+        errorEl.hidden = false;
+      }
+      setTimeout(function () {
+        btn.disabled = false;
+        label.textContent = 'Join Telegram Free';
+      }, 1200);
+    });
+  </script>
+</body>
+</html>
